@@ -193,6 +193,12 @@ export default class Calendar extends Component {
    ***************************************************************************************/
 
   modeSelector = () => {
+    let textColor;
+    if (this.props.light) {
+      textColor = { color: "rgba(0,0,0,1)" };
+    } else {
+      textColor = { color: "rgba(256,256,256,1)" };
+    }
     let body;
     if (this.state.mode === 0) {
       body = (
@@ -200,6 +206,7 @@ export default class Calendar extends Component {
           selectedDate={this.state.selectedDate}
           onDateClick={this.onDateClick}
           header={this.props.modeHeader}
+          light={textColor}
         />
       );
     } else if (this.state.mode === 1) {
@@ -207,6 +214,7 @@ export default class Calendar extends Component {
         <DisplayMonthlyCalendar
           onSetMonth={this.onSetMonth}
           header={this.props.modeHeader}
+          light={textColor}
         />
       );
     } else {
@@ -215,6 +223,7 @@ export default class Calendar extends Component {
           year={this.state.selectedDate}
           onSetYear={this.onYearClick}
           header={this.props.modeHeader}
+          light={textColor}
         />
       );
     }
@@ -228,9 +237,12 @@ export default class Calendar extends Component {
     );
   };
 
+  /**
+   * Main render method
+   */
   render() {
     return (
-      <MuiThemeProvider theme={this.props.dark ? darkTheme : lightTheme}>
+      <MuiThemeProvider theme={this.props.light ? lightTheme : darkTheme}>
         <Paper style={this.props.generalStyle}>{this.modeSelector()}</Paper>
       </MuiThemeProvider>
     );

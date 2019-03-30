@@ -34,10 +34,7 @@ const DisplayMonthlyCalendar = props => {
           >
             <Card style={{ backgroundColor: "rgba(0,0,0,0)", height: "100%" }}>
               <CardContent>
-                <Typography
-                  align="center"
-                  style={{ color: "rgba(256,256,256,1)" }}
-                >
+                <Typography align="center" style={props.textColor}>
                   {currentYear}
                 </Typography>
               </CardContent>

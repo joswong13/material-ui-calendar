@@ -9,11 +9,10 @@ export default class App extends Component {
         generalStyle={{
           maxWidth: "100%",
           margin: "0 auto",
-          backgroundColor: "rgba(0,0,0,0.8)",
+          backgroundColor: "rgba(0,0,0,1)",
           height: "100%",
           overflow: "auto"
         }}
-        dark={true}
       />
     );
   }

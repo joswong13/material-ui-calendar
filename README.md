@@ -24,6 +24,45 @@ class Example extends Component {
 }
 ```
 
+##Props
+
+#generalStyle
+generalStyle is a prop you can pass to the component to style the calendar window.
+'''jsx
+
+class Example extends Component {
+render() {
+return <Calendar generalStyle={{
+          maxWidth: "100%",
+          margin: "0 auto",
+          backgroundColor: "rgba(0,0,0,1)",
+          height: "100%",
+          overflow: "auto"
+        }}/>;
+}
+}
+'''
+![generalStyle](./screenshots/generalStyle.PNG)
+
+#light
+light mode turns the normal white text to black text. Default is set to false.
+
+class Example extends Component {
+render() {
+return <Calendar
+generalStyle={{
+          maxWidth: "100%",
+          margin: "0 auto",
+          backgroundColor: "rgba(256,256,256,1)",
+          height: "100%",
+          overflow: "auto"
+        }}
+light={true}/>;
+}
+}
+'''
+![light](./screenshots/light.PNG)
+
 ## License
 
 MIT © [joswong13](https://github.com/joswong13)

@@ -13,6 +13,12 @@ import {
 import dateFns from "date-fns";
 
 const DisplayDailyCalendar = props => {
+  let textColor;
+  if (props.light) {
+    textColor = { color: "rgba(0,0,0,1)" };
+  } else {
+    textColor = { color: "rgba(256,256,256,1)" };
+  }
   const today = new Date();
   const { selectedDate } = props;
   const monthStart = dateFns.startOfMonth(selectedDate);
@@ -67,9 +73,7 @@ const DisplayDailyCalendar = props => {
                   align="center"
                   style={
                     dateFns.isSameMonth(day, monthStart)
-                      ? {
-                          color: "rgba(256,256,256,1)"
-                        }
+                      ? props.textColor
                       : {
                           color: "rgba(128,128,128,1)"
                         }
