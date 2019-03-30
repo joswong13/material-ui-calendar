@@ -4,7 +4,7 @@
   "description": "React calendar using material-ui",
   "author": "joswong13",
   "license": "MIT",
-  "repository": "joswong13/react-material-ui-calendar",
+  "repository": "joswong13/material-ui-calendar",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
