@@ -221,7 +221,7 @@ export default class Calendar extends Component {
 
     return (
       <div style={{ height: "100%" }}>
-        {this.props.modeHeader ? this.renderFunctionalHeader() : <div />}
+        {/* {this.props.modeHeader ? this.renderFunctionalHeader() : <div />} */}
         {this.renderHeader()}
         {body}
       </div>

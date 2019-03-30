@@ -13,15 +13,13 @@ npm install --save react-material-ui-calendar
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
-import MyComponent from 'react-material-ui-calendar'
+import Calendar from "react-material-ui-calendar";
 
 class Example extends Component {
-  render () {
-    return (
-      <MyComponent />
-    )
+  render() {
+    return <Calendar />;
   }
 }
 ```
