@@ -13,12 +13,6 @@ import {
 import dateFns from "date-fns";
 
 const DisplayDailyCalendar = props => {
-  let textColor;
-  if (props.light) {
-    textColor = { color: "rgba(0,0,0,1)" };
-  } else {
-    textColor = { color: "rgba(256,256,256,1)" };
-  }
   const today = new Date();
   const { selectedDate } = props;
   const monthStart = dateFns.startOfMonth(selectedDate);
@@ -57,9 +51,9 @@ const DisplayDailyCalendar = props => {
           >
             <Card
               style={
-                dateFns.isSameDay(day, today)
+                dateFns.isSameDay(day, selectedDate)
                   ? {
-                      backgroundColor: "rgba(0,255,255,0.5)",
+                      backgroundColor: "rgba(128,128,128,0.5)",
                       height: "100%"
                     }
                   : {
@@ -69,18 +63,28 @@ const DisplayDailyCalendar = props => {
               }
             >
               <CardContent>
-                <Typography
-                  align="center"
-                  style={
-                    dateFns.isSameMonth(day, monthStart)
-                      ? props.textColor
-                      : {
-                          color: "rgba(128,128,128,1)"
-                        }
-                  }
-                >
-                  {formattedDate}
-                </Typography>
+                {dateFns.isSameDay(day, today) ? (
+                  <Typography
+                    align="center"
+                    color="primary"
+                    style={{ fontSize: "20px" }}
+                  >
+                    {formattedDate}
+                  </Typography>
+                ) : (
+                  <Typography
+                    align="center"
+                    style={
+                      dateFns.isSameMonth(day, monthStart)
+                        ? props.textColor
+                        : {
+                            color: "rgba(128,128,128,1)"
+                          }
+                    }
+                  >
+                    {formattedDate}
+                  </Typography>
+                )}
               </CardContent>
             </Card>
           </CardActionArea>
@@ -95,7 +99,7 @@ const DisplayDailyCalendar = props => {
     weekNumber += 1;
   }
   return (
-    <Table style={props.header ? { height: "85%" } : { height: "90%" }}>
+    <Table style={{ height: "90%" }}>
       <TableHead>
         <TableRow>
           {weekdays.map(day => (

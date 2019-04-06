@@ -19,37 +19,8 @@ export default class Calendar extends Component {
     showFunctionalHeader: true,
     selectStartandEnd: false,
     selected1: null,
-    selected2: null
-  };
-
-  /***************************************************************************************
-   * Functional Header functions
-   ***************************************************************************************/
-
-  /**
-   * If mode header is set to true, this header will be present.
-   */
-  renderFunctionalHeader = () => {
-    return (
-      <Paper
-        style={{
-          backgroundColor: "rgba(0,0,0,0)",
-          minHeight: "5%"
-        }}
-      >
-        <Button
-          variant={this.state.selectStartandEnd ? "contained" : "text"}
-          onClick={this.selectStartandEnd}
-        >
-          Select Start and End Date
-        </Button>
-        <Button>Temporary Button</Button>
-      </Paper>
-    );
-  };
-
-  selectStartandEnd = () => {
-    this.setState({ selectStartandEnd: !this.state.selectStartandEnd });
+    selected2: null,
+    functionalMode: false
   };
 
   /***************************************************************************************
@@ -80,7 +51,7 @@ export default class Calendar extends Component {
       const nextFiveYears = dateFns.addYears(this.state.selectedDate, 2);
       header = (
         <Typography variant="h5" inline={true}>
-          {dateFns.format(pastFiveYears, dateYearFormat)} -
+          {dateFns.format(pastFiveYears, dateYearFormat)} -{" "}
           {dateFns.format(nextFiveYears, dateYearFormat)}
         </Typography>
       );
@@ -98,6 +69,40 @@ export default class Calendar extends Component {
         </IconButton>
         <Button onClick={this.modeChange}>{header}</Button>
         <IconButton onClick={() => this.onChevronClick(false)}>
+          <ChevronRightRounded />
+        </IconButton>
+      </Paper>
+    );
+  };
+
+  /**
+   * Render the header but without mode change.
+   */
+  renderYearHeader = () => {
+    const dateYearFormat = "YYYY";
+    let header;
+
+    const pastFiveYears = dateFns.addYears(this.state.selectedDate, -9);
+    const nextFiveYears = dateFns.addYears(this.state.selectedDate, 2);
+    header = (
+      <Typography variant="h5" inline={true}>
+        {dateFns.format(pastFiveYears, dateYearFormat)} -{" "}
+        {dateFns.format(nextFiveYears, dateYearFormat)}
+      </Typography>
+    );
+
+    return (
+      <Paper
+        style={{
+          backgroundColor: "rgba(0,0,0,0)",
+          minHeight: "5%"
+        }}
+      >
+        <IconButton onClick={() => this.yearChevronClick(true)}>
+          <ChevronLeftRounded />
+        </IconButton>
+        {header}
+        <IconButton onClick={() => this.yearChevronClick(false)}>
           <ChevronRightRounded />
         </IconButton>
       </Paper>
@@ -152,8 +157,23 @@ export default class Calendar extends Component {
     }
   };
 
+  /*
+   * Clicking on the chevron buttons next to the calendar will add or subtract months/year/decades.
+   */
+  yearChevronClick = direction => {
+    if (direction) {
+      this.setState({
+        selectedDate: dateFns.addYears(this.state.selectedDate, -9)
+      });
+    } else {
+      this.setState({
+        selectedDate: dateFns.addYears(this.state.selectedDate, 9)
+      });
+    }
+  };
+
   /***************************************************************************************
-   * Calendar functions
+   * Calendar functions (on click)
    ***************************************************************************************/
 
   /**
@@ -165,34 +185,54 @@ export default class Calendar extends Component {
     });
 
     //This is for returning date when publishing
-    if (this.props.date) {
-      this.props.date(day);
+    if (
+      this.props.selection !== undefined &&
+      this.props.mode !== "month" &&
+      this.props.mode !== "year"
+    ) {
+      this.props.selection(day);
     }
   };
 
   /**
    * Clicking on a month in mode 1 will set the month and return back to the day calendar.(Monthly calendar mode)
+   * If explicitly set to month mode, it will only return the month value.
+   * Else it will change back to mode 0.
    */
   onSetMonth = value => {
-    var result = dateFns.setMonth(this.state.selectedDate, value);
-    this.setState({ selectedDate: result, mode: 0 });
+    if (this.props.selection !== undefined && this.props.mode === "month") {
+      this.props.selection(value);
+    } else {
+      var result = dateFns.setMonth(this.state.selectedDate, value);
+      this.setState({ selectedDate: result, mode: 0 });
+    }
   };
 
   /**
    * Clicking on a year in mode 2 will set the year and return back to monthly calendar. (Yearly calendar mode)
+   * If explicitly set to year mode, it will only return the year value.
+   * Else it will change back to mode 1.
    */
   onYearClick = value => {
-    this.setState({
-      mode: 1,
-      selectedDate: dateFns.setYear(this.state.selectedDate, value)
-    });
+    if (this.props.selection !== undefined && this.props.mode === "year") {
+      this.props.selection(value);
+    } else {
+      this.setState({
+        mode: 1,
+        selectedDate: dateFns.setYear(this.state.selectedDate, value)
+      });
+    }
   };
 
   /***************************************************************************************
    * Renders the entire body of the calendar
+   * Alternate between day, month and year.
    ***************************************************************************************/
 
-  modeSelector = () => {
+  /**
+   * Renders the regular calendar that can switch between day, month and year view.
+   */
+  defaultDaySelector = () => {
     let textColor;
     if (this.props.light) {
       textColor = { color: "rgba(0,0,0,1)" };
@@ -205,7 +245,6 @@ export default class Calendar extends Component {
         <DisplayDailyCalendar
           selectedDate={this.state.selectedDate}
           onDateClick={this.onDateClick}
-          header={this.props.modeHeader}
           light={textColor}
         />
       );
@@ -213,7 +252,6 @@ export default class Calendar extends Component {
       body = (
         <DisplayMonthlyCalendar
           onSetMonth={this.onSetMonth}
-          header={this.props.modeHeader}
           light={textColor}
         />
       );
@@ -222,7 +260,6 @@ export default class Calendar extends Component {
         <DailyYearlyCalendar
           year={this.state.selectedDate}
           onSetYear={this.onYearClick}
-          header={this.props.modeHeader}
           light={textColor}
         />
       );
@@ -230,13 +267,61 @@ export default class Calendar extends Component {
 
     return (
       <div style={{ height: "100%" }}>
-        {/* {this.props.modeHeader ? this.renderFunctionalHeader() : <div />} */}
         {this.renderHeader()}
         {body}
       </div>
     );
   };
 
+  /**
+   * Only render the month calendar and does not switch modes.
+   */
+  monthSelector = () => {
+    let textColor;
+    if (this.props.light) {
+      textColor = { color: "rgba(0,0,0,1)" };
+    } else {
+      textColor = { color: "rgba(256,256,256,1)" };
+    }
+    return (
+      <DisplayMonthlyCalendar onSetMonth={this.onSetMonth} light={textColor} />
+    );
+  };
+
+  /**
+   * Only render the year calendar and does not switch modes.
+   */
+  yearSelector = () => {
+    let textColor;
+    if (this.props.light) {
+      textColor = { color: "rgba(0,0,0,1)" };
+    } else {
+      textColor = { color: "rgba(256,256,256,1)" };
+    }
+    return (
+      <div style={{ height: "100%" }}>
+        {this.renderYearHeader()}
+        <DailyYearlyCalendar
+          year={this.state.selectedDate}
+          onSetYear={this.onYearClick}
+          light={textColor}
+        />
+      </div>
+    );
+  };
+  //year={this.state.selectedDate}
+  /**
+   * Depending on the props given, renders the different modes.
+   */
+  modeSelector = () => {
+    if (this.props.mode === "year") {
+      return this.yearSelector();
+    } else if (this.props.mode === "month") {
+      return this.monthSelector();
+    } else {
+      return this.defaultDaySelector();
+    }
+  };
   /**
    * Main render method
    */

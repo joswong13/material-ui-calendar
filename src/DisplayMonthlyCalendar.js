@@ -9,8 +9,24 @@ import {
   CardActionArea,
   CardContent
 } from "@material-ui/core";
+import dateFns from "date-fns";
 
 const DisplayMonthlyCalendar = props => {
+  let today = new Date();
+  const currentMonth = dateFns.getMonth(today);
+
+  /**
+   * If the month being displayed is the same as current month, highlight it with a gray box.
+   * @param {*} currentMonthCounter
+   */
+  const ifSameMonthCard = currentMonthCounter => {
+    if (currentMonth === currentMonthCounter) {
+      return { backgroundColor: "rgba(128,128,128,0.5)", height: "100%" };
+    } else {
+      return { backgroundColor: "rgba(0,0,0,0)", height: "100%" };
+    }
+  };
+
   const months = [
     { id: 0, name: "Jan" },
     { id: 1, name: "Feb" },
@@ -38,7 +54,7 @@ const DisplayMonthlyCalendar = props => {
             onClick={() => props.onSetMonth(monthID)}
             style={{ height: "100%" }}
           >
-            <Card style={{ backgroundColor: "rgba(0,0,0,0)", height: "100%" }}>
+            <Card style={ifSameMonthCard(monthCounter)}>
               <CardContent>
                 <Typography align="center" style={props.textColor}>
                   {months[monthCounter].name}
@@ -60,7 +76,7 @@ const DisplayMonthlyCalendar = props => {
   }
 
   return (
-    <Table style={props.header ? { height: "85%" } : { height: "90%" }}>
+    <Table style={{ height: "90%" }}>
       <TableBody>{rows}</TableBody>
     </Table>
   );

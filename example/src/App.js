@@ -3,6 +3,9 @@ import React, { Component } from "react";
 import Calendar from "react-material-ui-calendar";
 
 export default class App extends Component {
+  callBackFunction = value => {
+    console.log("The selection is  -> ", value);
+  };
   render() {
     return (
       <Calendar
@@ -13,8 +16,9 @@ export default class App extends Component {
           height: "100%",
           overflow: "auto"
         }}
+        selection={this.callBackFunction}
+        mode="month"
       />
     );
   }
 }
-//modeHeader={true}

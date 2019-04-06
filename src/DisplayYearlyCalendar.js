@@ -11,7 +11,9 @@ import {
 } from "@material-ui/core";
 import dateFns from "date-fns";
 
-const DisplayMonthlyCalendar = props => {
+const DisplayYearlyCalendar = props => {
+  let today = new Date();
+  const currentYearDateFNS = dateFns.getYear(today);
   const dateYearFormat = "YYYY";
   let pastYears = dateFns.addYears(props.year, -9);
   let futureYears = dateFns.addYears(props.year, 2);
@@ -21,8 +23,18 @@ const DisplayMonthlyCalendar = props => {
   let rows = [];
   let rowCounter = 0;
 
+  /**
+   * If the month being displayed is the same as current month, highlight it with a gray box.
+   */
+  const ifSameCurrentYearCard = currentYearCounter => {
+    if (currentYearDateFNS === currentYearCounter) {
+      return { backgroundColor: "rgba(128,128,128,0.5)", height: "100%" };
+    } else {
+      return { backgroundColor: "rgba(0,0,0,0)", height: "100%" };
+    }
+  };
+
   let currentYear = yearStart;
-  //onClick={() => props.onSetMonth(monthID)}
   while (currentYear < yearEnd + 1) {
     for (let i = 0; i < 3; i++) {
       let cloneCurrentYear = currentYear;
@@ -32,7 +44,7 @@ const DisplayMonthlyCalendar = props => {
             style={{ height: "100%" }}
             onClick={() => props.onSetYear(cloneCurrentYear)}
           >
-            <Card style={{ backgroundColor: "rgba(0,0,0,0)", height: "100%" }}>
+            <Card style={ifSameCurrentYearCard(cloneCurrentYear)}>
               <CardContent>
                 <Typography align="center" style={props.textColor}>
                   {currentYear}
@@ -54,10 +66,10 @@ const DisplayMonthlyCalendar = props => {
   }
 
   return (
-    <Table style={props.header ? { height: "85%" } : { height: "90%" }}>
+    <Table style={{ height: "90%" }}>
       <TableBody>{rows}</TableBody>
     </Table>
   );
 };
 
-export default DisplayMonthlyCalendar;
+export default DisplayYearlyCalendar;
