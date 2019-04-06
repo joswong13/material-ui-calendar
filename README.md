@@ -164,7 +164,7 @@ export default class App extends Component {
 }
 ```
 
-![month](./screenshots/monthSelector.PNG)
+![month](./screenshots/month.PNG)
 
 ###mode selection - year
 Displays the years for users to select.
@@ -192,7 +192,7 @@ export default class App extends Component {
 }
 ```
 
-![year](./screenshots/yearSelector.PNG)
+![year](./screenshots/year.PNG)
 
 ## License
 
