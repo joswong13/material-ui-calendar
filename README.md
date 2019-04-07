@@ -10,6 +10,10 @@
 npm install --save react-material-ui-calendar
 ```
 
+## Example/Demo
+
+Check out the demo [HERE!](https://joswong.me/calendar)
+
 ## Usage
 
 ```jsx
@@ -24,7 +28,7 @@ class Example extends Component {
 }
 ```
 
-##Props
+## Props
 
 | Props        | Arg type                                   |
 | ------------ | ------------------------------------------ |
@@ -33,7 +37,8 @@ class Example extends Component {
 | selection    | function                                   |
 | modes        | string (default is "day", "month", "year") |
 
-###generalStyle
+### generalStyle
+
 generalStyle is a prop you can pass to the component to style the calendar window.
 
 ```jsx
@@ -56,7 +61,8 @@ export default class App extends Component {
 
 ![generalStyle](./screenshots/generalStyle.PNG)
 
-###light
+### light
+
 light mode turns the normal white text to black text. Default is set to false for dark mode.
 
 ```jsx
@@ -80,7 +86,8 @@ export default class App extends Component {
 
 ![light](./screenshots/light.PNG)
 
-###selection
+### selection
+
 If you wish have the component return the selection, you can pass a function to the selection prop like below.
 
 ```jsx
@@ -109,7 +116,8 @@ export default class App extends Component {
 }
 ```
 
-###mode selection - day
+### mode selection - day
+
 This is the default mode and will display the regular calendar for users to select a day.
 mode="day" is not required.
 
@@ -136,7 +144,8 @@ export default class App extends Component {
 }
 ```
 
-###mode selection - month
+### mode selection - month
+
 Displays the twelve months of the year for users to select the month.
 The return values for months start at 0 for January, 1 for Febuary, etc.
 eg. If you selected July, the return month is 6.
@@ -166,7 +175,8 @@ export default class App extends Component {
 
 ![month](./screenshots/month.PNG)
 
-###mode selection - year
+### mode selection - year
+
 Displays the years for users to select.
 
 ```jsx
