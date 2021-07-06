@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Paper, Button, Typography, IconButton } from "@material-ui/core";
-import dateFns from "date-fns";
+import { format, addYears, setMonth, setYear, addMonths } from "date-fns";
 import ChevronLeftRounded from "@material-ui/icons/ChevronLeftRounded";
 import ChevronRightRounded from "@material-ui/icons/ChevronRightRounded";
 import DisplayMonthlyCalendar from "./DisplayMonthlyCalendar";
@@ -11,18 +11,25 @@ import DailyYearlyCalendar from "./DisplayYearlyCalendar";
 import { MuiThemeProvider } from "@material-ui/core";
 import { darkTheme, lightTheme } from "./muitheme";
 
-export default class Calendar extends Component {
-  state = {
-    selectedDate: new Date(),
-    selectedMonth: new Date(),
-    mode: 0,
-    showFunctionalHeader: true,
-    selectStartandEnd: false,
-    selected1: null,
-    selected2: null,
-    functionalMode: false
-  };
-
+const Calendar = props => {
+  // state = {
+  //   selectedDate: new Date(),
+  //   selectedMonth: new Date(),
+  //   mode: 0,
+  //   showFunctionalHeader: true,
+  //   selectStartandEnd: false,
+  //   selected1: null,
+  //   selected2: null,
+  //   functionalMode: false
+  // };
+  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [mode, setMode] = useState(0)
+  const [showFunctionalHeader, setShowFunctionalHeader] = useState(true)
+  const [selectStartandEnd, setSelectStartandEnd] = useState(false)
+  const [selected1, setSelected1] = useState(null)
+  const [selected2, setSelected2] = useState(null)
+  const [functionalMode, setFunctionalMode] = useState(false)
   /***************************************************************************************
    * Calender Header functions
    ***************************************************************************************/
@@ -31,28 +38,28 @@ export default class Calendar extends Component {
    * Depending on the mode, the calendar header will render different text.
    */
   renderHeader = () => {
-    const dateYearFormat = "YYYY";
-    const dateMonthFormat = "MMMM YYYY";
+    const dateYearFormat = "yyyy";
+    const dateMonthFormat = "MMMM yyyy";
     let header;
-    if (this.state.mode === 0) {
+    if (mode === 0) {
       header = (
         <Typography variant="h5" inline={true}>
-          {dateFns.format(this.state.selectedDate, dateMonthFormat)}
+          {format(selectedDate, dateMonthFormat)}
         </Typography>
       );
-    } else if (this.state.mode === 1) {
+    } else if (mode === 1) {
       header = (
         <Typography variant="h5" inline={true}>
-          {dateFns.format(this.state.selectedDate, dateYearFormat)}
+          {format(selectedDate, dateYearFormat)}
         </Typography>
       );
     } else {
-      const pastFiveYears = dateFns.addYears(this.state.selectedDate, -9);
-      const nextFiveYears = dateFns.addYears(this.state.selectedDate, 2);
+      const pastFiveYears = addYears(selectedDate, -9);
+      const nextFiveYears = addYears(selectedDate, 2);
       header = (
         <Typography variant="h5" inline={true}>
-          {dateFns.format(pastFiveYears, dateYearFormat)} -{" "}
-          {dateFns.format(nextFiveYears, dateYearFormat)}
+          {format(pastFiveYears, dateYearFormat)} -{" "}
+          {format(nextFiveYears, dateYearFormat)}
         </Typography>
       );
     }
@@ -64,11 +71,11 @@ export default class Calendar extends Component {
           minHeight: "5%"
         }}
       >
-        <IconButton onClick={() => this.onChevronClick(true)}>
+        <IconButton onClick={() => onChevronClick(true)}>
           <ChevronLeftRounded />
         </IconButton>
-        <Button onClick={this.modeChange}>{header}</Button>
-        <IconButton onClick={() => this.onChevronClick(false)}>
+        <Button onClick={modeChange}>{header}</Button>
+        <IconButton onClick={() => onChevronClick(false)}>
           <ChevronRightRounded />
         </IconButton>
       </Paper>
@@ -79,15 +86,15 @@ export default class Calendar extends Component {
    * Render the header but without mode change.
    */
   renderYearHeader = () => {
-    const dateYearFormat = "YYYY";
+    const dateYearFormat = "yyyy";
     let header;
 
-    const pastFiveYears = dateFns.addYears(this.state.selectedDate, -9);
-    const nextFiveYears = dateFns.addYears(this.state.selectedDate, 2);
+    const pastFiveYears = addYears(selectedDate, -9);
+    const nextFiveYears = addYears(selectedDate, 2);
     header = (
       <Typography variant="h5" inline={true}>
-        {dateFns.format(pastFiveYears, dateYearFormat)} -{" "}
-        {dateFns.format(nextFiveYears, dateYearFormat)}
+        {format(pastFiveYears, dateYearFormat)} -{" "}
+        {format(nextFiveYears, dateYearFormat)}
       </Typography>
     );
 
@@ -98,11 +105,11 @@ export default class Calendar extends Component {
           minHeight: "5%"
         }}
       >
-        <IconButton onClick={() => this.yearChevronClick(true)}>
+        <IconButton onClick={() => yearChevronClick(true)}>
           <ChevronLeftRounded />
         </IconButton>
         {header}
-        <IconButton onClick={() => this.yearChevronClick(false)}>
+        <IconButton onClick={() => yearChevronClick(false)}>
           <ChevronRightRounded />
         </IconButton>
       </Paper>
@@ -112,47 +119,37 @@ export default class Calendar extends Component {
   /*
    * Clicking on the header will change the mode between days, months and years.
    */
-  modeChange = () => {
-    if (this.state.mode === 0) {
-      this.setState({ mode: 1 });
-    } else if (this.state.mode === 1) {
-      this.setState({ mode: 2, selectedDate: new Date() });
+  const modeChange = () => {
+    if (mode === 0) {
+      setMode(1);
+    } else if (mode === 1) {
+      setMode(2)
+      setSelectedDate(new Date());
     } else {
-      this.setState({ mode: 0, selectedDate: new Date() });
+      setMode(0)
+      setSelectedDate(new Date());    
     }
   };
 
   /*
    * Clicking on the chevron buttons next to the calendar will add or subtract months/year/decades.
    */
-  onChevronClick = direction => {
+  const onChevronClick = direction => {
     if (direction) {
-      if (this.state.mode === 0) {
-        this.setState({
-          selectedDate: dateFns.addMonths(this.state.selectedDate, -1)
-        });
-      } else if (this.state.mode === 1) {
-        this.setState({
-          selectedDate: dateFns.addYears(this.state.selectedDate, -1)
-        });
+      if (mode === 0) {
+        setSelectedDate( addMonths(selectedDate, -1))
+      } else if (mode === 1) {
+        setSelectedDate( addYears(selectedDate, -1))
       } else {
-        this.setState({
-          selectedDate: dateFns.addYears(this.state.selectedDate, -9)
-        });
+        setSelectedDate( addYears(selectedDate, -9))
       }
     } else {
-      if (this.state.mode === 0) {
-        this.setState({
-          selectedDate: dateFns.addMonths(this.state.selectedDate, 1)
-        });
-      } else if (this.state.mode === 1) {
-        this.setState({
-          selectedDate: dateFns.addYears(this.state.selectedDate, 1)
-        });
+      if (mode === 0) {
+        setSelectedDate( addMonths(selectedDate, 1))
+      } else if (mode === 1) {
+        setSelectedDate( addYears(selectedDate, 1))
       } else {
-        this.setState({
-          selectedDate: dateFns.addYears(this.state.selectedDate, 9)
-        });
+        setSelectedDate( addYears(selectedDate, 9))
       }
     }
   };
@@ -160,15 +157,11 @@ export default class Calendar extends Component {
   /*
    * Clicking on the chevron buttons next to the calendar will add or subtract months/year/decades.
    */
-  yearChevronClick = direction => {
+  const yearChevronClick = direction => {
     if (direction) {
-      this.setState({
-        selectedDate: dateFns.addYears(this.state.selectedDate, -9)
-      });
+      setSelectedDate(addYears(selectedDate, -9));
     } else {
-      this.setState({
-        selectedDate: dateFns.addYears(this.state.selectedDate, 9)
-      });
+      setSelectedDate(addYears(selectedDate, 9));
     }
   };
 
@@ -179,32 +172,30 @@ export default class Calendar extends Component {
   /**
    * Clicking on a date in mode 0 (Day calendar mode)
    */
-  onDateClick = day => {
-    this.setState({
-      selectedDate: day
-    });
-
-    //This is for returning date when publishing
-    if (
-      this.props.selection !== undefined &&
-      this.props.mode !== "month" &&
-      this.props.mode !== "year"
-    ) {
-      this.props.selection(day);
-    }
-  };
+   const onDateClick = day => {
+    setSelectedDate(day);
+  //This is for returning date when publishing
+  if (
+    props.selection !== undefined &&
+    props.mode !== "month" &&
+    props.mode !== "year"
+  ) {
+    props.selection(day);
+  }
+};
 
   /**
    * Clicking on a month in mode 1 will set the month and return back to the day calendar.(Monthly calendar mode)
    * If explicitly set to month mode, it will only return the month value.
    * Else it will change back to mode 0.
    */
-  onSetMonth = value => {
-    if (this.props.selection !== undefined && this.props.mode === "month") {
-      this.props.selection(value);
+   const onSetMonth = value => {
+    if (props.selection !== undefined && props.mode === "month") {
+      props.selection(value);
     } else {
-      var result = dateFns.setMonth(this.state.selectedDate, value);
-      this.setState({ selectedDate: result, mode: 0 });
+      var result = setMonth(selectedDate, value);
+      setSelectedDate(result)
+      setMode(0);
     }
   };
 
@@ -213,14 +204,12 @@ export default class Calendar extends Component {
    * If explicitly set to year mode, it will only return the year value.
    * Else it will change back to mode 1.
    */
-  onYearClick = value => {
-    if (this.props.selection !== undefined && this.props.mode === "year") {
-      this.props.selection(value);
+   const onYearClick = value => {
+    if (props.selection !== undefined && props.mode === "year") {
+      props.selection(value);
     } else {
-      this.setState({
-        mode: 1,
-        selectedDate: dateFns.setYear(this.state.selectedDate, value)
-      });
+        setMode(1)
+        setSelectedDate(setYear(selectedDate, value));
     }
   };
 
@@ -232,34 +221,34 @@ export default class Calendar extends Component {
   /**
    * Renders the regular calendar that can switch between day, month and year view.
    */
-  defaultDaySelector = () => {
+   const defaultDaySelector = () => {
     let textColor;
-    if (this.props.light) {
+    if (props.light) {
       textColor = { color: "rgba(0,0,0,1)" };
     } else {
       textColor = { color: "rgba(256,256,256,1)" };
     }
     let body;
-    if (this.state.mode === 0) {
+    if (mode === 0) {
       body = (
         <DisplayDailyCalendar
-          selectedDate={this.state.selectedDate}
-          onDateClick={this.onDateClick}
+          selectedDate={selectedDate}
+          onDateClick={onDateClick}
           light={textColor}
         />
       );
-    } else if (this.state.mode === 1) {
+    } else if (mode === 1) {
       body = (
         <DisplayMonthlyCalendar
-          onSetMonth={this.onSetMonth}
+          onSetMonth={onSetMonth}
           light={textColor}
         />
       );
     } else {
       body = (
         <DailyYearlyCalendar
-          year={this.state.selectedDate}
-          onSetYear={this.onYearClick}
+          year={selectedDate}
+          onSetYear={onYearClick}
           light={textColor}
         />
       );
@@ -267,7 +256,7 @@ export default class Calendar extends Component {
 
     return (
       <div style={{ height: "100%" }}>
-        {this.renderHeader()}
+        {renderHeader()}
         {body}
       </div>
     );
@@ -276,60 +265,60 @@ export default class Calendar extends Component {
   /**
    * Only render the month calendar and does not switch modes.
    */
-  monthSelector = () => {
+ const  monthSelector = () => {
     let textColor;
-    if (this.props.light) {
+    if (props.light) {
       textColor = { color: "rgba(0,0,0,1)" };
     } else {
       textColor = { color: "rgba(256,256,256,1)" };
     }
     return (
-      <DisplayMonthlyCalendar onSetMonth={this.onSetMonth} light={textColor} />
+      <DisplayMonthlyCalendar onSetMonth={onSetMonth} light={textColor} />
     );
   };
 
   /**
    * Only render the year calendar and does not switch modes.
    */
-  yearSelector = () => {
+   const yearSelector = () => {
     let textColor;
-    if (this.props.light) {
+    if (props.light) {
       textColor = { color: "rgba(0,0,0,1)" };
     } else {
       textColor = { color: "rgba(256,256,256,1)" };
     }
     return (
       <div style={{ height: "100%" }}>
-        {this.renderYearHeader()}
+        {renderYearHeader()}
         <DailyYearlyCalendar
-          year={this.state.selectedDate}
-          onSetYear={this.onYearClick}
+          year={selectedDate}
+          onSetYear={onYearClick}
           light={textColor}
         />
       </div>
     );
   };
-  //year={this.state.selectedDate}
+  //year={selectedDate}
   /**
    * Depending on the props given, renders the different modes.
    */
-  modeSelector = () => {
-    if (this.props.mode === "year") {
-      return this.yearSelector();
-    } else if (this.props.mode === "month") {
-      return this.monthSelector();
+   const  modeSelector = () => {
+    if (props.mode === "year") {
+      return yearSelector();
+    } else if (props.mode === "month") {
+      return monthSelector();
     } else {
-      return this.defaultDaySelector();
+      return defaultDaySelector();
     }
   };
   /**
    * Main render method
    */
-  render() {
+
     return (
-      <MuiThemeProvider theme={this.props.light ? lightTheme : darkTheme}>
-        <Paper style={this.props.generalStyle}>{this.modeSelector()}</Paper>
+      <MuiThemeProvider theme={props.light ? lightTheme : darkTheme}>
+        <Paper style={props.generalStyle}>{modeSelector()}</Paper>
       </MuiThemeProvider>
     );
-  }
 }
+export default Calendar;

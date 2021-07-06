@@ -9,16 +9,16 @@ import {
   CardActionArea,
   CardContent
 } from "@material-ui/core";
-import dateFns from "date-fns";
+import {format, addYears, getYear} from "date-fns";
 
 const DisplayYearlyCalendar = props => {
   let today = new Date();
-  const currentYearDateFNS = dateFns.getYear(today);
-  const dateYearFormat = "YYYY";
-  let pastYears = dateFns.addYears(props.year, -9);
-  let futureYears = dateFns.addYears(props.year, 2);
-  let yearStart = parseInt(dateFns.format(pastYears, dateYearFormat));
-  let yearEnd = parseInt(dateFns.format(futureYears, dateYearFormat));
+  const currentYearDateFNS = getYear(today);
+  const dateYearFormat = "yyyy";
+  let pastYears = addYears(props.year, -9);
+  let futureYears = addYears(props.year, 2);
+  let yearStart = parseInt(format(pastYears, dateYearFormat));
+  let yearEnd = parseInt(format(futureYears, dateYearFormat));
   let rowsOfYears = [];
   let rows = [];
   let rowCounter = 0;
