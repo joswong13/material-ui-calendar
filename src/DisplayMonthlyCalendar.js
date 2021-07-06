@@ -9,11 +9,11 @@ import {
   CardActionArea,
   CardContent
 } from "@material-ui/core";
-import dateFns from "date-fns";
+import { getMonth } from "date-fns";
 
 const DisplayMonthlyCalendar = props => {
   let today = new Date();
-  const currentMonth = dateFns.getMonth(today);
+  const currentMonth = getMonth(today);
 
   /**
    * If the month being displayed is the same as current month, highlight it with a gray box.
